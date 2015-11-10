@@ -6,6 +6,7 @@ package cs21120.depq;
  * @author bpt
  */
 public interface DEPQ {
+
     /**
      * Returns the smallest element in the DEPQ but does not remove it from the DEPQ
      * @return returns the smallest element in the DEPQ
@@ -48,4 +49,5 @@ public interface DEPQ {
      * @return returns the number of elements currently in the DEPQ
      */
     int size();
+
 }
