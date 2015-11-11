@@ -49,5 +49,4 @@ public interface DEPQ {
      * @return returns the number of elements currently in the DEPQ
      */
     int size();
-
 }

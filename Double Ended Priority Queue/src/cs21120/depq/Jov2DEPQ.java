@@ -1,53 +1,63 @@
 package cs21120.depq;
 
-import cs21120.depq.bst.BST;
+import cs21120.depq.heap.Heap;
 
-public class Jov2DEPQ implements DEPQ {
+public class Jov2DEPQ{
 
-	private BST heap;
+	private DEPQ heap;
 
 	public Jov2DEPQ() {
-		heap = new BST();
+		heap = new Heap();
 	}
 
-	public static void main(String[] args) {
-		new Jov2DEPQ();
-	}
-
-	@Override
 	public Comparable inspectLeast() {
-		return heap.peekLeast();
+		return heap.inspectLeast();
 	}
 
-	@Override
 	public Comparable inspectMost() {
-		return heap.peekMost();
+		return heap.inspectMost();
 	}
 
-	@Override
-	public void add(Comparable c) {
-		heap.offer(c);
-	}
+	public void add(Comparable c) { heap.add(c); }
 
-	@Override
-	public Comparable getLeast() {
-		//return heap.getMin();
-		return null;
-	}
+	public Comparable getLeast() { return heap.getLeast(); }
 
-	@Override
-	public Comparable getMost() {
-		//return heap.getMax();
-		return null;
-	}
+	public Comparable getMost() { return heap.getMost(); }
 
-	@Override
 	public boolean isEmpty() {
 		return heap.isEmpty();
 	}
 
-	@Override
 	public int size() {
-		return heap.getSize();
+		return heap.size();
 	}
+
+	public void printSize(){
+		System.out.println("Size: " + size());
+	}
+
+	public static void main(String[] args) {
+		Jov2DEPQ depq = new Jov2DEPQ();
+		for(int i = 0; i < 10; i++){
+			depq.add(i);
+		}
+		depq.printSize();
+		System.out.println("------------------------------");
+		Comparable peekLeast = depq.inspectLeast();
+		System.out.println("Peek Least: " + peekLeast.toString() + " with size " + depq.size());
+		Comparable peekMost = depq.inspectMost();
+		System.out.println("Peek Most: " + peekMost.toString() + " with size " + depq.size());
+		System.out.println("------------------------------");
+		System.out.println("	Least: " + depq.inspectLeast() + " Most: " + depq.inspectMost());
+		Comparable getLeast = depq.getLeast();
+		System.out.println("Get Least: " + getLeast.toString() + " with size " + depq.size());
+		System.out.println("	Least: " + depq.inspectLeast() + " Most: " + depq.inspectMost());
+		Comparable getMost = depq.getMost();
+		System.out.println("Get Least: " + getMost.toString() + " with size " + depq.size());
+		System.out.println("	Least: " + depq.inspectLeast() + " Most: " + depq.inspectMost());
+		System.out.println("------------------------------");
+		depq.printSize();
+
+	}
+
 }

@@ -1,5 +1,6 @@
 package cs21120.depq;
 
+import cs21120.depq.heap.Heap;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,21 +19,22 @@ import static org.junit.Assert.assertEquals;
  */
 public class DEPQTest {
 
-    DEPQ depq;
+    private DEPQ depq;
 
     @Before
     public void setUp() {
-        depq = new Jov2DEPQ(); //TODO, Replace with constructor for your implemenation
+        depq = new Heap(); //TODO, Replace with constructor for your implemenation
     }
+
 
     /**
      * Test of inspectLeast method, of class DEPQ.
      */
-    //@Test
+    @Test
     public void testInspectLeast() {
         System.out.println("inspectLeast");
 
-        ArrayList<Integer> array = new ArrayList<Integer>();
+        ArrayList<Integer> array = new ArrayList<>();
         int smallest =10000;
         // First check adding random number gives correct smallest
         for (int i=0; i<100; i++) {
@@ -70,11 +72,11 @@ public class DEPQTest {
     /**
      * Test of inspectMost method, of class DEPQ.
      */
-   // @Test
+    @Test
     public void testInspectMost() {
         System.out.println("inspectMost");
 
-        ArrayList<Integer> array = new ArrayList<Integer>();
+        ArrayList<Integer> array = new ArrayList<>();
         int largest = -10000;
         // First check adding random number gives correct largest
         for (int i=0; i<100; i++) {
@@ -113,7 +115,7 @@ public class DEPQTest {
     /**
      * Test of add method, of class DEPQ.
      */
-    //@Test
+    @Test
     public void testAdd() {
         System.out.println("add");
 
@@ -128,7 +130,7 @@ public class DEPQTest {
     /**
      * Test of getLeast method, of class DEPQ.
      */
-    //@Test
+    @Test
     public void testGetLeast() {
         System.out.println("getLeast");
 
@@ -138,6 +140,7 @@ public class DEPQTest {
         for (int i=0; i<1000; i++) {
             Integer expResult = (Integer)depq.inspectLeast();
             Integer result = (Integer)depq.getLeast();
+            System.out.println("Expected: " + expResult.toString() + " Result: " + result.toString());
             assertEquals(expResult, result);
         }
     }
@@ -145,7 +148,7 @@ public class DEPQTest {
     /**
      * Test of getMost method, of class DEPQ.
      */
-    //@Test
+    @Test
     public void testGetMost() {
         System.out.println("getMost");
 
@@ -172,7 +175,6 @@ public class DEPQTest {
 
         for (int i=0; i<10; i++) {
             int count = (int)(Math.random()*1000);
-            count = 10;
             for (int j=0; j<count; j++) {
                 depq.add(j);
                 assertEquals(false, depq.isEmpty());
@@ -188,7 +190,7 @@ public class DEPQTest {
     /**
      * Test of size method, of class DEPQ.
      */
-   // @Test
+    @Test
     public void testSize() {
         System.out.println("size");
 
@@ -200,11 +202,8 @@ public class DEPQTest {
 
         for (int i=0; i<1000; i++) {
             boolean bigEnd = Math.random()>0.5;
-            if (bigEnd){
-                depq.getMost();
-            }else{
-                depq.getLeast();
-            }
+            if (bigEnd) depq.getMost();
+            else depq.getLeast();
             assertEquals(1000-i-1, depq.size());
         }
     }
