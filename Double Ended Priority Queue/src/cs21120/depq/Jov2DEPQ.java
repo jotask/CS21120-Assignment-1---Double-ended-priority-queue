@@ -57,6 +57,7 @@ public class Jov2DEPQ{
 		System.out.println("	Least: " + depq.inspectLeast() + " Most: " + depq.inspectMost());
 		System.out.println("------------------------------");
 		depq.printSize();
+		System.out.println("END");
 
 	}
 
