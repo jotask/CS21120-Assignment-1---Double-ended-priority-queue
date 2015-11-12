@@ -50,14 +50,11 @@ public class DEPQTest {
         // Next randomly add or remove and check inspect least
         for (int i=0; i<99; i++) {
             boolean add = Math.random()>0.5;
-            System.out.println("----------------------------------------------");
-            System.out.println("Smallest is: " + smallest);
             if (add) {
                 int k = (int)(Math.random()*100);
                 array.add(k);
                 depq.add(k);
                 if (k<smallest) smallest = k;
-                System.out.println("Added: " + k);
             } else {
                 Integer discarded = (Integer)depq.getLeast();
                 array.remove(discarded);
@@ -65,11 +62,9 @@ public class DEPQTest {
                 for(int j=1; j<array.size(); j++) {
                     if (array.get(j)<smallest) smallest = array.get(j);
                 }
-                System.out.println("Removed: " + discarded);
             }
 
             Integer result = (Integer)depq.inspectLeast();
-            System.out.println("    Smallest: " + smallest + " Result: " + result.intValue());
             assertEquals(smallest, result.intValue());
         }
     }

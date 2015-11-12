@@ -3,17 +3,17 @@ package cs21120.depq;
 public class Jov2DEPQ implements DEPQ{
 
     private Node root;
-
     private int size;
 
-    private Node createNode(int value, Node parent, Node left, Node right){
-        return new Node(value, parent, left, right);
+    public Jov2DEPQ() {
+        this.root = null;
+        this.size = 0;
     }
 
-    private Node search(int element) {
+    private Node search(Comparable element) {
         Node node = root;
         while (node != null && node.value != null && node.value != element) {
-            if (element < node.value) {
+            if (element.compareTo(node.value) < 0) {
                 node = node.left;
             } else {
                 node = node.right;
@@ -22,73 +22,33 @@ public class Jov2DEPQ implements DEPQ{
         return node;
     }
 
-    public Node insert(int element) {
-        if (root == null) {
-            root = createNode(element, null, null, null);
-            size++;
-            return root;
-        }
-
-        Node insertParentNode = null;
-        Node searchTempNode = root;
-        while (searchTempNode != null && searchTempNode.value != null) {
-            insertParentNode = searchTempNode;
-            if (element < searchTempNode.value) {
-                searchTempNode = searchTempNode.left;
-            } else {
-                searchTempNode = searchTempNode.right;
-            }
-        }
-
-        Node newNode = createNode(element, insertParentNode, null, null);
-        if (insertParentNode.value > newNode.value) {
-            insertParentNode.left = newNode;
-        } else {
-            insertParentNode.right = newNode;
-        }
-
-        size++;
-        return newNode;
-    }
-
-    public Node delete(int element) {
+    private void delete(Comparable element) {
         Node deleteNode = search(element);
-        if (deleteNode != null) {
-            return delete(deleteNode);
+        if (deleteNode == null) {
+            throw new RuntimeException("Something is wrong");
+        }
+        if (deleteNode.left == null) {
+            transplant(deleteNode, deleteNode.right);
+        } else if (deleteNode.right == null) {
+            transplant(deleteNode, deleteNode.left);
         } else {
-            throw new RuntimeException("Element Not Found");
-        }
-    }
-
-    private Node delete(Node deleteNode) {
-        if (deleteNode != null) {
-            Node nodeToReturn = null;
-            if (deleteNode != null) {
-                if (deleteNode.left == null) {
-                    nodeToReturn = transplant(deleteNode, deleteNode.right);
-                } else if (deleteNode.right == null) {
-                    nodeToReturn = transplant(deleteNode, deleteNode.left);
-                } else {
-                    Node successorNode = getMinimum(deleteNode.right);
-                    if (successorNode.parent != deleteNode) {
-                        transplant(successorNode, successorNode.right);
-                        successorNode.right = deleteNode.right;
-                        successorNode.right.parent = successorNode;
-                    }
-                    transplant(deleteNode, successorNode);
-                    successorNode.left = deleteNode.left;
-                    successorNode.left.parent = successorNode;
-                    nodeToReturn = successorNode;
-                }
-                size--;
+            Node successorNode = deleteNode.right;
+            while (successorNode.left != null) {
+                successorNode = successorNode.left;
             }
-
-            return nodeToReturn;
+            if (successorNode.parent != deleteNode) {
+                transplant(successorNode, successorNode.right);
+                successorNode.right = deleteNode.right;
+                successorNode.right.parent = successorNode;
+            }
+            transplant(deleteNode, successorNode);
+            successorNode.left = deleteNode.left;
+            successorNode.left.parent = successorNode;
         }
-        return null;
+        size--;
     }
 
-    private Node transplant(Node nodeToReplace, Node newNode) {
+    private void transplant(Node nodeToReplace, Node newNode) {
         if (nodeToReplace.parent == null) {
             this.root = newNode;
         } else if (nodeToReplace == nodeToReplace.parent.left) {
@@ -99,58 +59,55 @@ public class Jov2DEPQ implements DEPQ{
         if (newNode != null) {
             newNode.parent = nodeToReplace.parent;
         }
-        return newNode;
     }
-
-    public boolean contains(int element) {
-        return search(element) != null;
-    }
-
-    public int getMinimum() {
-        return getMinimum(root).value;
-    }
-
-    public int getMaximum() {
-        return getMaximum(root).value;
-    }
-
-    /*-------------------PRIVATE HELPER METHODS-------------------*/
-
-
-    private Node getMinimum(Node node) {
-        while (node.left != null) {
-            node = node.left;
-        }
-        return node;
-    }
-
-    private Node getMaximum(Node node) {
-        while (node.right != null) {
-            node = node.right;
-        }
-        return node;
-    }
-
 
     @Override
     public Comparable inspectLeast() {
-        return getMinimum();
+        Node node = root;
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node.value;
     }
 
     @Override
     public Comparable inspectMost() {
-        return getMaximum();
+        Node node = root;
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node.value;
     }
 
     @Override
-    public void add(Comparable c) {
-        Integer ins = (Integer)c;
-        insert(ins.intValue());
+    public void add(Comparable value) {
+        if (root == null) {
+            root = new Node(value);
+            size++;
+            return;
+        }
+        Node insertParentNode = null;
+        Node searchTempNode = root;
+        while (searchTempNode != null && searchTempNode.value != null) {
+            insertParentNode = searchTempNode;
+            if (value.compareTo(searchTempNode.value) < 0) {
+                searchTempNode = searchTempNode.left;
+            } else {
+                searchTempNode = searchTempNode.right;
+            }
+        }
+        Node newNode = new Node(value, insertParentNode);
+        if (insertParentNode.value.compareTo(newNode.value) > 0) {
+            insertParentNode.left = newNode;
+        } else {
+            insertParentNode.right = newNode;
+        }
+        size++;
     }
 
     @Override
     public Comparable getLeast() {
-        Integer least = getMinimum();
+        Comparable least = inspectLeast();
         delete(least);
         return least;
 
@@ -158,7 +115,7 @@ public class Jov2DEPQ implements DEPQ{
 
     @Override
     public Comparable getMost() {
-        Integer most = getMaximum();
+        Comparable most = inspectMost();
         delete(most);
         return most;
     }
@@ -174,46 +131,25 @@ public class Jov2DEPQ implements DEPQ{
     }
 
     public static class Node {
-        public Node(Integer value, Node parent, Node left, Node right) {
-            super();
-            this.value = value;
-            this.parent = parent;
-            this.left = left;
-            this.right = right;
-        }
 
-        public Integer value;
+        public Comparable value;
         public Node parent;
         public Node left;
         public Node right;
 
-        public boolean isLeaf() {
-            return left == null && right == null;
+        public Node(Comparable value) {
+            this(value, null, null, null);
         }
 
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((value == null) ? 0 : value.hashCode());
-            return result;
+        public Node(Comparable value, Node parent) {
+            this(value, parent, null, null);
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Node other = (Node) obj;
-            if (value == null) {
-                if (other.value != null)
-                    return false;
-            } else if (!value.equals(other.value))
-                return false;
-            return true;
+        private Node(Comparable value, Node parent, Node left, Node right) {
+            this.value = value;
+            this.parent = parent;
+            this.left = left;
+            this.right = right;
         }
 
     }
