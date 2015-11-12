@@ -10,7 +10,8 @@ public class Jov2DEPQ implements DEPQ{
         this.size = 0;
     }
 
-    private Node search(Comparable element) {
+    private void delete(Comparable element) {
+
         Node node = root;
         while (node != null && node.value != null && node.value != element) {
             if (element.compareTo(node.value) < 0) {
@@ -19,36 +20,33 @@ public class Jov2DEPQ implements DEPQ{
                 node = node.right;
             }
         }
-        return node;
-    }
 
-    private void delete(Comparable element) {
-        Node deleteNode = search(element);
+        Node deleteNode = node;
         if (deleteNode == null) {
             throw new RuntimeException("Something is wrong");
         }
         if (deleteNode.left == null) {
-            transplant(deleteNode, deleteNode.right);
+            transfer(deleteNode, deleteNode.right);
         } else if (deleteNode.right == null) {
-            transplant(deleteNode, deleteNode.left);
+            transfer(deleteNode, deleteNode.left);
         } else {
             Node successorNode = deleteNode.right;
             while (successorNode.left != null) {
                 successorNode = successorNode.left;
             }
             if (successorNode.parent != deleteNode) {
-                transplant(successorNode, successorNode.right);
+                transfer(successorNode, successorNode.right);
                 successorNode.right = deleteNode.right;
                 successorNode.right.parent = successorNode;
             }
-            transplant(deleteNode, successorNode);
+            transfer(deleteNode, successorNode);
             successorNode.left = deleteNode.left;
             successorNode.left.parent = successorNode;
         }
         size--;
     }
 
-    private void transplant(Node nodeToReplace, Node newNode) {
+    private void transfer(Node nodeToReplace, Node newNode) {
         if (nodeToReplace.parent == null) {
             this.root = newNode;
         } else if (nodeToReplace == nodeToReplace.parent.left) {
@@ -97,6 +95,7 @@ public class Jov2DEPQ implements DEPQ{
             }
         }
         Node newNode = new Node(value, insertParentNode);
+        assert insertParentNode != null;
         if (insertParentNode.value.compareTo(newNode.value) > 0) {
             insertParentNode.left = newNode;
         } else {
@@ -130,26 +129,22 @@ public class Jov2DEPQ implements DEPQ{
         return size;
     }
 
-    public static class Node {
+    public class Node {
 
-        public Comparable value;
+        public final Comparable value;
         public Node parent;
         public Node left;
         public Node right;
 
         public Node(Comparable value) {
-            this(value, null, null, null);
+            this(value, null);
         }
 
         public Node(Comparable value, Node parent) {
-            this(value, parent, null, null);
-        }
-
-        private Node(Comparable value, Node parent, Node left, Node right) {
             this.value = value;
             this.parent = parent;
-            this.left = left;
-            this.right = right;
+            this.left = null;
+            this.right = null;
         }
 
     }
