@@ -5,13 +5,30 @@ package cs21120.depq;
  * Priority Double-Ended Queue assignment
  *
  * I implemented a Binary Search Tree because
- * they have a O(log n) time complexity in average.
+ * they have a O(log n) time complexity in average for search and delete.
+ *
+ * Because a keep the references to the most and the lowest value, inspect
+ * those values is only O(1) time complexity.
+ *
+ * -------------------------
+ *      Self Evaluation
+ * -------------------------
+ * The first attempt to resolve this assignment was implementing an Intervale Heap
+ * but it didn't work properly and I had problems resolving some parts of the assignment.
+ * So I decided to change to a Binary Search Tree implementation. All the methods have
+ * Java Docs with is time complexity, Also the main methods (insert, remove, etc) have
+ * comments for each line for explaining what they do.
+ *
+ * I think this work and implementation is at least a 60%.
  *
  */
 public class Jov2DEPQ implements DEPQ{
 
     /** Root node for the three where all the tree starts. */
     private Node root;
+
+    private Comparable least;
+    private Comparable most;
 
     /** Tree size */
     private int size;
@@ -22,26 +39,69 @@ public class Jov2DEPQ implements DEPQ{
      */
     public Jov2DEPQ() {
         this.root = null;
+        this.least = null;
+        this.most = null;
         this.size = 0;
     }
 
     /**
-     * Inspect the node with the least value.
+     * Know if the new comparable inserted on the tree is the less value thant the actual
+     * less value, or the most value from the actual most value
+     *
+     * Time Complexity: O(1);
+     *
+     * @param value
+     *          The new value inserted on the tree
+     */
+    private void insertComparable(Comparable value){
+        // If the new value is the less thant the actual less value
+        // Or is high thant the actual most value
+        if(least.compareTo(value) > 0){
+            // If is less means is the new least value
+            least = value;
+        }else if(most.compareTo(value) < 0){
+            // If is high means is the most new value
+            most = value;
+        }
+    }
+
+    /**
+     *Check if the value deleted from the tree is the actual less or the actual
+     * most value, if is, find the new lest or most value on the tree
+     *
+     * @param value
+     *      The value is deleted from the tree
+     */
+    private void deleteComparable(Comparable value){
+        if(least.equals(value)){
+            // If is the least, find the new least value on the tree
+            least = knowLeast();
+        }
+        if(most.equals(value)){
+            // If the most value, find he new most value on the tree
+            most = knowMost();
+        }
+    }
+
+    /**
+     * Find the node with the least value on the tree.
      * Basically keep looking for the bottom left node
      * until his left child is null. That mean, that
      * node is the node with the least value.
      * This method does not remove the value from the tree
      *
-     * Time Complexity
+     * Time Complexity:
      *      Average: O(log n)
-     *      Worst Case: O(n)
+     *      Worst case: O(n)
      *
      * @return
-     *      The comparable with the least node.
+     *      The comparable with the least value on the tree
      */
-    @Override
-    public Comparable inspectLeast() {
+    private Comparable knowLeast(){
         Node node = root;
+        if(node == null){
+            return null;
+        }
         while (node.left != null) {
             node = node.left;
         }
@@ -49,26 +109,53 @@ public class Jov2DEPQ implements DEPQ{
     }
 
     /**
-     * Inspect the node with the most value.
+     * Find the node with the most value on the tree.
      * Basically keep looking for the bottom right node
      * until his right child is null. That mean, that
      * node is the node with the most value.
-     * This method does not remove the value from the tree
      *
-     * Time Complexity
+     * Time Complexity:
      *      Average: O(log n)
-     *      Worst Case: O(n)
+     *      Worst case: O(n)
+     *
+     * @return
+     *      The comparable with the most value on the tree
+     */
+    private Comparable knowMost(){
+        Node node = root;
+        if(node == null){
+            return null;
+        }
+        while (node.right != null) {
+            node = node.right;
+        }
+        return node.value;
+    }
+
+    /**
+     * Inspect the node with the least value.
+     *
+     * Time Complexity: O(1)
+     *
+     * @return
+     *      The comparable with the least value.
+     */
+    @Override
+    public Comparable inspectLeast() {
+        return least;
+    }
+
+    /**
+     * Inspect the node with the most value.
+     *
+     * Time Complexity: O(1)
      *
      * @return
      *      The comparable with the most node.
      */
     @Override
     public Comparable inspectMost() {
-        Node node = root;
-        while (node.right != null) {
-            node = node.right;
-        }
-        return node.value;
+        return most;
     }
 
     /**
@@ -89,6 +176,8 @@ public class Jov2DEPQ implements DEPQ{
         // increment the size and exit the methods, we done.
         if (root == null) {
             root = new Node(value);
+            least = value;
+            most = value;
             size++;
             return;
         }
@@ -126,6 +215,9 @@ public class Jov2DEPQ implements DEPQ{
         } else {
             insertParentNode.right = newNode;
         }
+
+        // Check if the new value is the new least or the new Most
+        insertComparable(value);
 
         // Increment the size by one
         size++;
@@ -168,6 +260,9 @@ public class Jov2DEPQ implements DEPQ{
 
     /**
      * Know if the tree is empty
+     *
+     * Time Complexity: O(1)
+     *
      * @return
      *      if is empty
      */
@@ -178,6 +273,9 @@ public class Jov2DEPQ implements DEPQ{
 
     /**
      * Know the size of the tree
+     *
+     * Time Complexity: O(1)
+     *
      * @return
      *      the size of the tree
      */
@@ -193,16 +291,16 @@ public class Jov2DEPQ implements DEPQ{
      *      Average: O(log n)
      *      Worst case: O(n)
      *
-     * @param element
+     * @param value
      *          The value needs to be deleted
      */
-    private void delete(Comparable element) {
+    private void delete(Comparable value) {
 
         // Search the node which have the value we want delete. We start
         // from the root of the tree and keep searching until we found the value
         Node deleteNode = root;
-        while (deleteNode != null && deleteNode.value != null && deleteNode.value != element) {
-            if (element.compareTo(deleteNode.value) < 0) {
+        while (deleteNode != null && deleteNode.value != null && deleteNode.value != value) {
+            if (value.compareTo(deleteNode.value) < 0) {
                 deleteNode = deleteNode.left;
             } else {
                 deleteNode = deleteNode.right;
@@ -213,7 +311,7 @@ public class Jov2DEPQ implements DEPQ{
         // Make sure the node we want delete is not null, and have the same value we want delete
         // If not throw an exception. This can be improve on the interface to set to some methods
         // the possibility to throw exceptions for handle it the problems.
-        if (deleteNode == null || !deleteNode.value.equals(element)) {
+        if (deleteNode == null || !deleteNode.value.equals(value)) {
             throw new RuntimeException("Value not found.");
         }
 
@@ -257,6 +355,9 @@ public class Jov2DEPQ implements DEPQ{
             successorNode.left = deleteNode.left;
             successorNode.left.parent = successorNode;
         }
+
+        // know if the value delete is the most or least value and find the new values
+        deleteComparable(value);
 
         // Decrease the size by one
         size--;
