@@ -5,7 +5,21 @@ package cs21120.depq;
  * Priority Double-Ended Queue assignment
  *
  * I implemented a Binary Search Tree because
- * they have a O(log n) time complexity in average.
+ * they have a O(log n) time complexity in average for search and delete.
+ *
+ * Because a keep the references to the most and the lowest value, inspect
+ * those values is only O(1) time complexity.
+ *
+ * -------------------------
+ *      Self Evaluation
+ * -------------------------
+ * The first attempt to resolve this assignment was implementing an Intervale Heap
+ * but it didn't work properly and I had problems resolving some parts of the assignment.
+ * So I decided to change to a Binary Search Tree implementation. All the methods have
+ * Java Docs with is time complexity, Also the main methods (insert, remove, etc) have
+ * comments for each line for explaining what they do.
+ *
+ * I think this work and implementation is at least a 60%.
  *
  */
 public class Jov2DEPQ implements DEPQ{
@@ -64,7 +78,7 @@ public class Jov2DEPQ implements DEPQ{
             least = knowLeast();
         }
         if(most.equals(value)){
-            // If the most value, fint he new most value on the tree
+            // If the most value, find he new most value on the tree
             most = knowMost();
         }
     }
@@ -246,6 +260,9 @@ public class Jov2DEPQ implements DEPQ{
 
     /**
      * Know if the tree is empty
+     *
+     * Time Complexity: O(1)
+     *
      * @return
      *      if is empty
      */
@@ -256,6 +273,9 @@ public class Jov2DEPQ implements DEPQ{
 
     /**
      * Know the size of the tree
+     *
+     * Time Complexity: O(1)
+     *
      * @return
      *      the size of the tree
      */
