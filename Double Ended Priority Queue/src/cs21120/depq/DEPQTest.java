@@ -63,11 +63,11 @@ public class DEPQTest {
                     if (array.get(j)<smallest) smallest = array.get(j);
                 }
             }
-
             Integer result = (Integer)depq.inspectLeast();
             assertEquals(smallest, result.intValue());
         }
     }
+
     /**
      * Test of inspectMost method, of class DEPQ.
      */

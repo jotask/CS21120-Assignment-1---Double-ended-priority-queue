@@ -329,11 +329,11 @@ public class Jov2DEPQ implements DEPQ{
 
             // If have left child and a right we need to deal with his children's
             // Create a instance of the right child
-            Node successorNode = deleteNode.right;
+            Node node = deleteNode.right;
 
             // Keep looking for the right less child with the least node
-            while (successorNode.left != null) {
-                successorNode = successorNode.left;
+            while (node.left != null) {
+                node = node.left;
             }
 
             // If the parent of the node found is not the node we want delete
@@ -341,19 +341,19 @@ public class Jov2DEPQ implements DEPQ{
             // Set the right child of the successor node, to the right child from
             // the node we want delete. Change right child parent to the successor
             // node
-            if (successorNode.parent != deleteNode) {
-                transfer(successorNode, successorNode.right);
-                successorNode.right = deleteNode.right;
-                successorNode.right.parent = successorNode;
+            if (node.parent != deleteNode) {
+                transfer(node, node.right);
+                node.right = deleteNode.right;
+                node.right.parent = node;
             }
 
             // Transfer the node we want delete to the successor node we founded, later
             // set left child a reference to the left child of the node we want delete,
             // and change his left child parent reference to be the successor node we
             // founds.
-            transfer(deleteNode, successorNode);
-            successorNode.left = deleteNode.left;
-            successorNode.left.parent = successorNode;
+            transfer(deleteNode, node);
+            node.left = deleteNode.left;
+            node.left.parent = node;
         }
 
         // know if the value delete is the most or least value and find the new values
@@ -365,33 +365,33 @@ public class Jov2DEPQ implements DEPQ{
 
     /**
      * Transfer one node from tree to the place of another node
-     * @param nodeToReplace
+     * @param node
      *      Node which is go to be replace by the other
      *      node anb removed from the tree
      * @param newNode
      *      The new node to be replaced
      */
-    private void transfer(Node nodeToReplace, Node newNode) {
-        if (nodeToReplace.parent == null) {
+    private void transfer(Node node, Node newNode) {
+        if (node.parent == null) {
             // Check if the parent of this node is null.
             // If is null means the nodeToReplace is the root node
             // Set the newNode to be the new root node
             this.root = newNode;
-        } else if (nodeToReplace == nodeToReplace.parent.left) {
+        } else if (node == node.parent.left) {
             //If the node we want replace is the left child from his parent
             // is because have a lowest value change the parent less child
             // to be the new node
-            nodeToReplace.parent.left = newNode;
+            node.parent.left = newNode;
         } else {
             // If not means is the right value, so set the parent right node
             // from the node we want replace to be the new node
-            nodeToReplace.parent.right = newNode;
+            node.parent.right = newNode;
         }
         // If the new node is not null
         // set the parent of the new node to be the parent
         // of the node we want replace
         if (newNode != null) {
-            newNode.parent = nodeToReplace.parent;
+            newNode.parent = node.parent;
         }
     }
 
