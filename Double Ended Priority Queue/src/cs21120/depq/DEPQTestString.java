@@ -18,21 +18,22 @@ import static org.junit.Assert.assertEquals;
  */
 public class DEPQTestString {
 
-    DEPQ depq;
+    private DEPQ depq;
 
-    public static char[] letters = {'a', 'b', 'c', 'd', 'e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+    private static final char[] letters = {'a', 'b', 'c', 'd', 'e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
+
     @Before
     public void setUp() {
-        depq = new Jov2DEPQ(); //TODO, Replace with constructor for your implemenation
+        depq = new Jov2DEPQ();
     }
 
-    public String randomString(int len) {
+    private String randomString(int len) {
         char[] word = new char[len];
         for (int i=0; i<len; i++) word[i] = letters[(int)(Math.random()*letters.length)];
-        String str = new String(word);
 
-        return str;
+        return new String(word);
     }
+
     /**
      * Test of inspectLeast method, of class DEPQ.
      */
@@ -40,7 +41,7 @@ public class DEPQTestString {
     public void testInspectLeast() {
         System.out.println("inspectLeast");
 
-        ArrayList<String> array = new ArrayList<String>();
+        ArrayList<String> array = new ArrayList<>();
         String smallest = "zzzzz";
         // First check adding random number gives correct smallest
         for (int i=0; i<100; i++) {
@@ -77,6 +78,7 @@ public class DEPQTestString {
             assertEquals(smallest, result);
         }
     }
+
     /**
      * Test of inspectMost method, of class DEPQ.
      */
@@ -84,7 +86,7 @@ public class DEPQTestString {
     public void testInspectMost() {
         System.out.println("inspectMost");
 
-        ArrayList<String> array = new ArrayList<String>();
+        ArrayList<String> array = new ArrayList<>();
         String largest = "a";
         // First check adding random number gives correct largest
         for (int i=0; i<100; i++) {
